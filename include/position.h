@@ -43,20 +43,65 @@ namespace IBN5100 {
             static constexpr uint64_t bottomMask = bottom(7, 6);
             static constexpr uint64_t boardMask = bottomMask * ((1LL << 6) - 1);
 
-            uint64_t winPos() const;
+            inline uint64_t winPos() const { return computeWinPos(pos, mask); };
+            inline uint64_t oppWinPos() const { return computeWinPos(pos ^ mask, mask); };
+            inline uint64_t possibleMoves() const { return (mask + bottomMask) & boardMask; };
 
-            uint64_t oppWinPos() const;
+            /**
+             * @brief Determine all cells resulting in a win for the current player.
+             * 
+             * @param pos (uint64) A bitmap with all the cells occupied by the current player.
+             * @param mask (uint64) A bitmask with all the occupied cells.
+             * @return A bitmap with a 1 representing all the winning cells for the current player.
+             */
+            static constexpr uint64_t computeWinPos(uint64_t pos, uint64_t mask) {
+                // * ===========
+                // * Vertical
+                // * ===========
 
-            uint64_t possibleMoves() const;
+                uint64_t r = (pos << 1) & (pos << 2) & (pos << 3);
 
-            static constexpr uint64_t computeWinPos(uint64_t pos, uint64_t mask);
 
-            // Count the number of 1s in a bitmap
-            static constexpr uint8_t numOnes(uint64_t);
+                // * =============
+                // * Horizontal
+                // * =============
 
-            static constexpr uint64_t topMaskCol(uint8_t c);
+                // Left side horizontal
+                uint64_t p = (pos << 7) & (pos << 14);
+                r |= p & (pos << 21);
+                r |= p & (pos >> 7);
 
-            static constexpr uint64_t bottomMaskCol(uint8_t c);
+                // Right side horizontal
+                p = (pos >> 7) & (pos >> 14);
+                r |= p & (pos >> 21);
+                r |= p & (pos << 7);
+
+
+                // * ============
+                // * Diagonals
+                // * ============
+
+                // Diagonal 1
+                p = (pos << 6) & (pos << 12);
+                r |= p & (pos << 18);
+                r |= p & (pos >> 6);
+                p = (pos >> 6) & (pos >> 12);
+                r |= p & (pos >> 18);
+                r |= p & (p << 6);
+
+                // Diagonal 2
+                p = (pos << 8) & (pos << 16);
+                r |= p & (pos << 24);
+                r |= p & (pos >> 8);
+                p = (pos >> 8) & (pos >> 16);
+                r |= p & (pos >> 24);
+                r |= p & (pos << 8);
+
+                return r & (boardMask ^ mask);
+            };
+
+            static constexpr uint64_t topMaskCol(uint8_t c) { return 1ULL << (5 + c*7); };
+            static constexpr uint64_t bottomMaskCol(uint8_t c) { return 1ULL << c*7; };
 
         public:
             static constexpr int8_t minScore = -18;
