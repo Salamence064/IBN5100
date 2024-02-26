@@ -41,7 +41,7 @@ namespace IBN5100 {
             uint8_t moves; // moves played since the start of the game
 
             static constexpr uint64_t bottomMask = bottom(7, 6);
-            static constexpr uint64_t boardMask = bottomMask * ((1LL << 6) - 1);
+            static constexpr uint64_t boardMask = bottomMask * ((1ULL << 6) - 1);
 
             inline uint64_t winPos() const { return computeWinPos(pos, mask); };
             inline uint64_t oppWinPos() const { return computeWinPos(pos ^ mask, mask); };
@@ -116,20 +116,20 @@ namespace IBN5100 {
              * @return The number of played moves. It will stop at the first invalid move and can be checked
              *          by comparing this return value with the length of the seq.
              */
-            inline uint8_t init(std::string seq) {
+            inline size_t init(std::string const &seq) {
                 uint8_t c;
 
-                for (uint8_t i = 0; i < seq.size(); ++i) {
+                for (uint8_t i = 0; i < seq.length(); ++i) {
                     c = seq[i] - '1';
                     if (c < 0 || c >= 7 || !canPlay(c) || isWin(c)) { return i; }
                     play(c);
                 }
 
-                return seq.size();
+                return seq.length();
             };
 
             inline bool canPlay(uint8_t c) const { return !(mask & topMaskCol(c)); };
-            inline void play(uint8_t c) { play((mask | bottomMaskCol(c)) & columnMask(c)); };
+            inline void play(uint8_t c) { play((mask + bottomMaskCol(c)) & columnMask(c)); };
 
             inline void play(uint64_t move) {
                 pos ^= mask;
