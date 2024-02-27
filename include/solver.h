@@ -13,16 +13,16 @@ namespace IBN5100 {
              * 
              * @param pos (Position) The position to evaluate. It is assumed that no one has already won and that
              *              the current player cannot win this move.
-             * @param alpha (int) The lower bound score of the position.
-             * @param beta (int) The upper bound score of the position.
+             * @param alpha (int8) The lower bound score of the position.
+             * @param beta (int8) The upper bound score of the position.
              * @return The exact score of the position.
              */
-            int negamax(Position const &pos, int alpha, int beta);
+            int8_t negamax(Position const &pos, int8_t alpha, int8_t beta);
 
         public:
             constexpr Solver() : nodeCount{0} {};
 
-            int solve(Position const &pos, bool weak = 0);
+            int8_t solve(Position const &pos, bool weak = 0);
 
             inline uint64_t getNodeCount() const { return nodeCount; };
 
