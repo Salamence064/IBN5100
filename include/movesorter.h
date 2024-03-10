@@ -11,7 +11,7 @@ namespace IBN5100 {
     class MoveSorter {
         private:
             uint8_t size;
-            struct { uint64_t move; int8_t score; } moves[7];
+            struct { uint64_t move; int score; } moves[7];
 
         public:
             inline MoveSorter() : size{0} {};

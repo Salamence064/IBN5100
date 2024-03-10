@@ -1,12 +1,8 @@
 #include <iostream>
 #include "../include/solver.h"
 
-// todo if solver stuff stops working, try testing it with just the in data types to see if the int8_ts truncate information
-
 namespace IBN5100 {
-    int8_t Solver::negamax(Position const &pos, int8_t alpha, int8_t beta) {
-        // std::cout << "Yor: " << pos.stringPos << ", " << (int) pos.getMoves() << std::endl;
-        
+    int Solver::negamax(Position const &pos, int alpha, int beta) {        
         assert(alpha < beta);
         assert(!pos.canWinNext());
 
@@ -22,7 +18,7 @@ namespace IBN5100 {
         if (moves >= 40) { return 0; }
 
         // Compute the new minimum possible score since our opponent cannot win on their next move.
-        int8_t min = -(40 - moves)/2;
+        int min = -(40 - moves)/2;
         
         // Check if we need to update our lower bound.
         if (alpha < min) {
@@ -31,7 +27,7 @@ namespace IBN5100 {
         }
 
         // Compute the maximum possible score as we cannot win on this move.
-        int8_t max = (41 - moves)/2;
+        int max = (41 - moves)/2;
 
         // Check if we need to update our upper bound.
         if (beta > max) {
@@ -55,10 +51,8 @@ namespace IBN5100 {
             Position pos2(pos);
             pos2.play(move);
 
-            // std::cout << "Yor2: " << (int) pos2.getMoves() << std::endl;
-
             // The score of the move would be equal to the negative score of the move for the opponent. 
-            int8_t score = -negamax(pos2, -beta, -alpha);
+            int score = -negamax(pos2, -beta, -alpha);
 
             // If the score is greater than or equal to the upper bound, we know we have found the best possible score.
             if (score >= beta) { return score; }
@@ -70,11 +64,11 @@ namespace IBN5100 {
         return alpha;
     };
 
-    int8_t Solver::solve(Position const &pos, bool weak) {
+    int Solver::solve(Position const &pos, bool weak) {
         if (pos.canWinNext()) { return (43 - pos.getMoves())/2; }
 
-        int8_t min = -(42 - pos.getMoves())/2;
-        int8_t max = (43 - pos.getMoves())/2 - 1; // subtract 1 as we cannot win this turn
+        int min = -(42 - pos.getMoves())/2;
+        int max = (43 - pos.getMoves())/2 - 1; // subtract 1 as we cannot win this turn
 
         if (weak) {
             min = -1;
@@ -83,14 +77,14 @@ namespace IBN5100 {
 
         // iteratively narrow the search window
         while (min < max) {
-            int8_t med = min + (min + max)/2;
+            int med = min + (min + max)/2;
 
             if (med <= 0 && min/2 < med) { med = min/2; }
             else if (med >= 0 && max/2 > med) { med = max/2; }
 
             // Use a search window of depth 1 to see if the actual score is less than or greater than med.
             // From this result, we can then modify the min or max accordingly.
-            int8_t temp = negamax(pos, med, med + 1);
+            int temp = negamax(pos, med, med + 1);
 
             if (temp <= med) { max = temp; }
             else { min = temp; }

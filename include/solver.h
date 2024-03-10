@@ -17,12 +17,12 @@ namespace IBN5100 {
              * @param beta (int8) The upper bound score of the position.
              * @return The exact score of the position.
              */
-            int8_t negamax(Position const &pos, int8_t alpha, int8_t beta);
+            int negamax(Position const &pos, int alpha, int beta);
 
         public:
             constexpr Solver() : nodeCount{0} {};
 
-            int8_t solve(Position const &pos, bool weak = 0);
+            int solve(Position const &pos, bool weak = 0);
 
             inline uint64_t getNodeCount() const { return nodeCount; };
 
