@@ -1,6 +1,6 @@
 #pragma once
 
-#include "position.h"
+#include "movesorter.h"
 
 namespace IBN5100 {
     class Solver {

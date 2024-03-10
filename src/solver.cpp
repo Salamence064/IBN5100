@@ -1,11 +1,12 @@
-#pragma once
-
-#include "solver.h"
+#include <iostream>
+#include "../include/solver.h"
 
 // todo if solver stuff stops working, try testing it with just the in data types to see if the int8_ts truncate information
 
 namespace IBN5100 {
     int8_t Solver::negamax(Position const &pos, int8_t alpha, int8_t beta) {
+        // std::cout << "Yor: " << pos.stringPos << ", " << (int) pos.getMoves() << std::endl;
+        
         assert(alpha < beta);
         assert(!pos.canWinNext());
 
@@ -40,13 +41,21 @@ namespace IBN5100 {
 
         // TODO: add transposition table stuff here
 
-        // TODO: add MoveSorter stuff here (and update for loop to match)
+        MoveSorter movesOrder;
+
+        for (uint8_t i = 0; i < 7; ++i) {
+            if (uint64_t move = possible & Position::columnMask(colOrder[i])) {
+                movesOrder.add(move, pos.moveScore(move));
+            }
+        }
 
         // Simulate each possible move.
         // The max score from all the possible moves is the score of the current position.
-        for (uint8_t i = 0; i < 7; ++i) {
+        while (uint64_t move = movesOrder.getNext()) {
             Position pos2(pos);
-            pos2.play(colOrder[i]);
+            pos2.play(move);
+
+            // std::cout << "Yor2: " << (int) pos2.getMoves() << std::endl;
 
             // The score of the move would be equal to the negative score of the move for the opponent. 
             int8_t score = -negamax(pos2, -beta, -alpha);

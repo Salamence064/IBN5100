@@ -36,9 +36,9 @@ namespace IBN5100 {
      */
     class Position {
         private:
-            uint64_t pos; // bitmap storing a 1 to represent every cell the current player has a piece in
-            uint64_t mask; // bitmask storing a 1 to represent every cell containing a piece
-            uint8_t moves; // moves played since the start of the game
+            uint64_t pos = 0; // bitmap storing a 1 to represent every cell the current player has a piece in
+            uint64_t mask = 0; // bitmask storing a 1 to represent every cell containing a piece
+            uint8_t moves = 0; // moves played since the start of the game
 
             static constexpr uint64_t bottomMask = bottom(7, 6);
             static constexpr uint64_t boardMask = bottomMask * ((1ULL << 6) - 1);
