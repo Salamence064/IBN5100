@@ -1,10 +1,15 @@
 #include <iostream>
 #include "../include/solver.h"
 
+// TODO worth trying making everything standard datatypes instead of trying to truncate the stuff to uint8s
+
 namespace IBN5100 {
     int Solver::negamax(Position const &pos, int alpha, int beta) {        
         assert(alpha < beta);
         assert(!pos.canWinNext());
+
+        // std::cout << "[Yor] " << alpha << ", " << beta << "\n";
+        // std::cout << "[Yor] " << (int) pos.getMoves() << "\n";
 
         ++nodeCount;
         uint8_t moves = pos.getMoves();
@@ -42,8 +47,13 @@ namespace IBN5100 {
         for (uint8_t i = 0; i < 7; ++i) {
             if (uint64_t move = possible & Position::columnMask(colOrder[i])) {
                 movesOrder.add(move, pos.moveScore(move));
+                // std::cout << "Yor Forger\n";
             }
         }
+
+        MoveSorter copy = movesOrder;
+        // if (!copy.getNext()) { std::cout << "Yor!!!\n"; }
+        // else { std::cout << "Yor\n"; }
 
         // Simulate each possible move.
         // The max score from all the possible moves is the score of the current position.
@@ -51,15 +61,24 @@ namespace IBN5100 {
             Position pos2(pos);
             pos2.play(move);
 
+            // std::cout << "Yor\n";
+
             // The score of the move would be equal to the negative score of the move for the opponent. 
             int score = -negamax(pos2, -beta, -alpha);
+
+            // std::cout << "Yor: " << score << "\n";
 
             // If the score is greater than or equal to the upper bound, we know we have found the best possible score.
             if (score >= beta) { return score; }
 
             // Update our lower bound if needed.
             if (alpha < score) { alpha = score; }
+
+            // std::cout << "Yor Briar\n";
         }
+
+        // std::cout << "Yor is hot\n";
+        // std::cout << "Yor: " << alpha << "\n";
 
         return alpha;
     };
@@ -75,7 +94,7 @@ namespace IBN5100 {
             max = 1;
         }
 
-        // iteratively narrow the search window
+        // iteratively narrow the search window with a modified version of binary search
         while (min < max) {
             int med = min + (min + max)/2;
 
@@ -86,6 +105,7 @@ namespace IBN5100 {
             // From this result, we can then modify the min or max accordingly.
             int temp = negamax(pos, med, med + 1);
 
+            // update the min and max accordingly
             if (temp <= med) { max = temp; }
             else { min = temp; }
         }
