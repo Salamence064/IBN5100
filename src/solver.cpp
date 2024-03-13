@@ -1,8 +1,6 @@
 #include <iostream>
 #include "../include/solver.h"
 
-// TODO worth trying making everything standard datatypes instead of trying to truncate the stuff to uint8s
-
 namespace IBN5100 {
     int Solver::negamax(Position const &pos, int alpha, int beta) {        
         assert(alpha < beta);
