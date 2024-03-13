@@ -8,9 +8,6 @@ namespace IBN5100 {
         assert(alpha < beta);
         assert(!pos.canWinNext());
 
-        // std::cout << "[Yor] " << alpha << ", " << beta << "\n";
-        // std::cout << "[Yor] " << (int) pos.getMoves() << "\n";
-
         ++nodeCount;
         uint8_t moves = pos.getMoves();
 
@@ -40,20 +37,40 @@ namespace IBN5100 {
             if (alpha >= beta) { return beta; }
         }
 
-        // TODO: add transposition table stuff here
+        // Check if we have a position stored in our transposition table.
+        // If we do, we will update the bounds accordingly.
+        const uint64_t key = pos.key(); // todo idk if this const has any benefit
+
+        if (int val = transTable[key]) {
+            if (val > Position::maxScore - Position::minScore + 1) { // we have a lower bound
+                min = val + 2*Position::minScore - Position::maxScore - 2; // decode the stored lower bound
+
+                // Check if we need to update our lower bound.
+                if (alpha < min) {
+                    alpha = min;
+                    if (alpha >= beta) { return alpha; }
+                }
+
+            } else { // we have an upper bound
+                max = val + Position::minScore - 1; // decode the stored upper bound
+
+                // Check if we need to update our upper bound.
+                if (beta > max) {
+                    beta = max;
+                    if (alpha >= beta) { return beta; }
+                }
+            }
+        }
 
         MoveSorter movesOrder;
 
         for (uint8_t i = 0; i < 7; ++i) {
             if (uint64_t move = possible & Position::columnMask(colOrder[i])) {
                 movesOrder.add(move, pos.moveScore(move));
-                // std::cout << "Yor Forger\n";
             }
         }
 
         MoveSorter copy = movesOrder;
-        // if (!copy.getNext()) { std::cout << "Yor!!!\n"; }
-        // else { std::cout << "Yor\n"; }
 
         // Simulate each possible move.
         // The max score from all the possible moves is the score of the current position.
@@ -61,25 +78,22 @@ namespace IBN5100 {
             Position pos2(pos);
             pos2.play(move);
 
-            // std::cout << "Yor\n";
-
             // The score of the move would be equal to the negative score of the move for the opponent. 
             int score = -negamax(pos2, -beta, -alpha);
 
-            // std::cout << "Yor: " << score << "\n";
-
             // If the score is greater than or equal to the upper bound, we know we have found the best possible score.
-            if (score >= beta) { return score; }
+            if (score >= beta) {
+                // Save this as the lower bound of the position.
+                transTable.add(key, score + Position::maxScore - 2*Position::minScore + 2);
+                return score;
+            }
 
             // Update our lower bound if needed.
             if (alpha < score) { alpha = score; }
-
-            // std::cout << "Yor Briar\n";
         }
 
-        // std::cout << "Yor is hot\n";
-        // std::cout << "Yor: " << alpha << "\n";
-
+        // Save this as the upper bound of our position.
+        transTable.add(key, alpha - Position::minScore + 1);
         return alpha;
     };
 

@@ -7,7 +7,7 @@
 namespace IBN5100 {
     // Generate a bitmask representing the bottom slot of each column.
     // This is used to initialize bottomMask.
-    constexpr static uint64_t bottom(int8_t width, int8_t height) {
+    constexpr static uint64_t bottom(int width, int height) {
         return !width ? 0 : bottom(width - 1, height) | 1ULL << (width - 1) * (height + 1);
     };
 
@@ -104,8 +104,8 @@ namespace IBN5100 {
             static constexpr uint64_t bottomMaskCol(uint8_t c) { return 1ULL << c*7; };
 
         public:
-            static constexpr int8_t minScore = -18;
-            static constexpr int8_t maxScore = 18;
+            static constexpr int minScore = -18;
+            static constexpr int maxScore = 18;
 
             constexpr Position() : pos{0}, mask{0}, moves{0} {};
 
@@ -163,10 +163,10 @@ namespace IBN5100 {
                 return possibleMask & ~(oppWin >> 1);
             };
 
-            inline int8_t moveScore(uint64_t move) const {
+            inline int moveScore(uint64_t move) const {
                 uint64_t p = computeWinPos(pos | move, mask);
                 
-                int8_t n = 0;
+                int n = 0;
                 for (; n; ++n) { p &= p - 1; }
                 return n;
             };
