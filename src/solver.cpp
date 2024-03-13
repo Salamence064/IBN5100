@@ -39,7 +39,7 @@ namespace IBN5100 {
 
         // Check if we have a position stored in our transposition table.
         // If we do, we will update the bounds accordingly.
-        const uint64_t key = pos.key(); // todo idk if this const has any benefit
+        uint64_t key = pos.key();
 
         if (int val = transTable[key]) {
             if (val > Position::maxScore - Position::minScore + 1) { // we have a lower bound

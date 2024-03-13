@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstring>
 #include <cassert>
 #include <type_traits>
@@ -53,10 +54,10 @@ namespace IBN5100 {
             key_t* keys;
             value_t* values;
 
-            static constexpr size_t index(key_t key) const { return key % size; };
+            static constexpr size_t index(key_t key) { return key % size; };
 
         public:
-            inline TranspositionTable() {
+            constexpr TranspositionTable() {
                 keys = new key_t[size];
                 values = new value_t[size];
                 reset();
