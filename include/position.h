@@ -38,7 +38,7 @@ namespace IBN5100 {
         private:
             uint64_t pos = 0; // bitmap storing a 1 to represent every cell the current player has a piece in
             uint64_t mask = 0; // bitmask storing a 1 to represent every cell containing a piece
-            uint8_t moves = 0; // moves played since the start of the game
+            int moves = 0; // moves played since the start of the game
 
             static constexpr uint64_t bottomMask = bottom(7, 6);
             static constexpr uint64_t boardMask = bottomMask * ((1ULL << 6) - 1);
@@ -100,8 +100,8 @@ namespace IBN5100 {
                 return r & (boardMask ^ mask);
             };
 
-            static constexpr uint64_t topMaskCol(uint8_t c) { return 1ULL << (5 + c*7); };
-            static constexpr uint64_t bottomMaskCol(uint8_t c) { return 1ULL << c*7; };
+            static constexpr uint64_t topMaskCol(int c) { return 1ULL << (5 + c*7); };
+            static constexpr uint64_t bottomMaskCol(int c) { return 1ULL << c*7; };
 
         public:
             static constexpr int minScore = -18;
@@ -117,9 +117,9 @@ namespace IBN5100 {
              *          by comparing this return value with the length of the seq.
              */
             inline size_t init(std::string const &seq) {
-                uint8_t c;
+                int c;
 
-                for (uint8_t i = 0; i < seq.length(); ++i) {
+                for (size_t i = 0; i < seq.length(); ++i) {
                     c = seq[i] - '1';
                     if (c < 0 || c >= 7 || !canPlay(c) || isWin(c)) { return i; }
                     play(c);
@@ -128,8 +128,8 @@ namespace IBN5100 {
                 return seq.length();
             };
 
-            inline bool canPlay(uint8_t c) const { return !(mask & topMaskCol(c)); };
-            inline void play(uint8_t c) { play((mask + bottomMaskCol(c)) & columnMask(c)); };
+            inline bool canPlay(int c) const { return !(mask & topMaskCol(c)); };
+            inline void play(int c) { play((mask + bottomMaskCol(c)) & columnMask(c)); };
 
             inline void play(uint64_t move) {
                 pos ^= mask;
@@ -137,7 +137,7 @@ namespace IBN5100 {
                 ++moves;
             };
 
-            inline bool isWin(uint8_t c) const { return winPos() & possibleMoves() & columnMask(c); };
+            inline bool isWin(int c) const { return winPos() & possibleMoves() & columnMask(c); };
 
             inline void reset() {
                 pos = 0;
@@ -172,8 +172,8 @@ namespace IBN5100 {
             };
             
             inline uint64_t key() const { return pos + mask; };
-            inline uint8_t getMoves() const { return moves; };
+            inline int getMoves() const { return moves; };
 
-            static constexpr uint64_t columnMask(uint8_t c) { return ((1ULL << 6) - 1) << 7*c; };
+            static constexpr uint64_t columnMask(int c) { return ((1ULL << 6) - 1) << 7*c; };
     };
 }

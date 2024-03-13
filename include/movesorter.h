@@ -10,7 +10,7 @@ namespace IBN5100 {
      */
     class MoveSorter {
         private:
-            uint8_t size;
+            int size;
             struct { uint64_t move; int score; } moves[7];
 
         public:
@@ -20,10 +20,10 @@ namespace IBN5100 {
              * @brief Add a move with its score. Do not try to add more than 7 moves.
              * 
              * @param move (uint64) The move to add.
-             * @param score (int8) The score of the move.
+             * @param score (int) The score of the move.
              */
-            inline void add(uint64_t move, int8_t score) {
-                uint8_t i = size++;
+            inline void add(uint64_t move, int score) {
+                int i = size++;
                 for (; i && moves[i - 1].score > score; --i) { moves[i] = moves[i - 1]; }
                 moves[i].move = move;
                 moves[i].score = score;

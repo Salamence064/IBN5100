@@ -9,7 +9,7 @@ namespace IBN5100 {
         assert(!pos.canWinNext());
 
         ++nodeCount;
-        uint8_t moves = pos.getMoves();
+        int moves = pos.getMoves();
 
         uint64_t possible = pos.nonLosingMoves();
         if (!possible) { return -(42 - moves)/2; }
@@ -64,13 +64,11 @@ namespace IBN5100 {
 
         MoveSorter movesOrder;
 
-        for (uint8_t i = 0; i < 7; ++i) {
+        for (int i = 0; i < 7; ++i) {
             if (uint64_t move = possible & Position::columnMask(colOrder[i])) {
                 movesOrder.add(move, pos.moveScore(move));
             }
         }
-
-        MoveSorter copy = movesOrder;
 
         // Simulate each possible move.
         // The max score from all the possible moves is the score of the current position.

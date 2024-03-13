@@ -7,7 +7,7 @@ namespace IBN5100 {
     class Solver {
         private:
             uint64_t nodeCount; // track the number of explored nodes
-            uint8_t colOrder[7] = {3, 4, 2, 5, 1, 6, 0}; // current priority for the columns
+            int colOrder[7] = {3, 4, 2, 5, 1, 6, 0}; // current priority for the columns
             TranspositionTable<49, log2(Position::maxScore - Position::minScore + 1) + 2, 23> transTable;
         
             /**
@@ -15,8 +15,8 @@ namespace IBN5100 {
              * 
              * @param pos (Position) The position to evaluate. It is assumed that no one has already won and that
              *              the current player cannot win this move.
-             * @param alpha (int8) The lower bound score of the position.
-             * @param beta (int8) The upper bound score of the position.
+             * @param alpha (int) The lower bound score of the position.
+             * @param beta (int) The upper bound score of the position.
              * @return The exact score of the position.
              */
             int negamax(Position const &pos, int alpha, int beta);
