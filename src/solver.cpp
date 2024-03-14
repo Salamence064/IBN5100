@@ -106,7 +106,7 @@ namespace IBN5100 {
 
         // iteratively narrow the search window with a modified version of binary search
         while (min < max) {
-            int med = min + (min + max)/2;
+            int med = min + (max - min)/2;
 
             if (med <= 0 && min/2 < med) { med = min/2; }
             else if (med >= 0 && max/2 > med) { med = max/2; }
