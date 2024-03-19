@@ -10,7 +10,7 @@ namespace IBN5100 {
     // * Util functions to compute the next prime at compile time
     // * ============================================================
 
-    constexpr uint64_t med(uint64_t min, uint64_t max) { return (min+max)/2; };
+    constexpr uint64_t med(uint64_t min, uint64_t max) { return (max + min)/2; };
 
     // Use a modified binary seach to determine if n has a factor between min (inclusive) and max (exclusive)
     constexpr bool hasFactor(uint64_t n, uint64_t min, uint64_t max) {

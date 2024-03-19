@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <cassert>
+// #include <iostream>
 
 namespace IBN5100 {
     // Generate a bitmask representing the bottom slot of each column.
@@ -35,7 +36,7 @@ namespace IBN5100 {
      * Since bottom is constant, key = pos + mask would also be a unique representation.
      */
     class Position {
-        private:
+        public: // todo change back to private
             uint64_t pos = 0; // bitmap storing a 1 to represent every cell the current player has a piece in
             uint64_t mask = 0; // bitmask storing a 1 to represent every cell containing a piece
             int moves = 0; // moves played since the start of the game
@@ -54,7 +55,9 @@ namespace IBN5100 {
              * @param mask (uint64) A bitmask with all the occupied cells.
              * @return A bitmap with a 1 representing all the winning cells for the current player.
              */
-            static constexpr uint64_t computeWinPos(uint64_t pos, uint64_t mask) {
+            static uint64_t computeWinPos(uint64_t pos, uint64_t mask) { // todo add back constexpr
+                // todo seems this function might be the issue
+
                 // * ===========
                 // * Vertical
                 // * ===========
@@ -87,7 +90,7 @@ namespace IBN5100 {
                 r |= p & (pos >> 6);
                 p = (pos >> 6) & (pos >> 12);
                 r |= p & (pos >> 18);
-                r |= p & (p << 6);
+                r |= p & (pos << 6);
 
                 // Diagonal 2
                 p = (pos << 8) & (pos << 16);
@@ -97,6 +100,7 @@ namespace IBN5100 {
                 r |= p & (pos >> 24);
                 r |= p & (pos << 8);
 
+                // xor the mask with the boardMask to ensure the cell detected as winning has not already been played
                 return r & (boardMask ^ mask);
             };
 

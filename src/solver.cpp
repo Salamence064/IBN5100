@@ -10,6 +10,7 @@ namespace IBN5100 {
         int moves = pos.getMoves();
 
         uint64_t possible = pos.nonLosingMoves();
+
         if (!possible) { return -(42 - moves)/2; }
 
         // Check for a drawn game.
