@@ -55,9 +55,7 @@ namespace IBN5100 {
              * @param mask (uint64) A bitmask with all the occupied cells.
              * @return A bitmap with a 1 representing all the winning cells for the current player.
              */
-            static uint64_t computeWinPos(uint64_t pos, uint64_t mask) { // todo add back constexpr
-                // todo seems this function might be the issue
-
+            constexpr static uint64_t computeWinPos(uint64_t pos, uint64_t mask) {
                 // * ===========
                 // * Vertical
                 // * ===========
