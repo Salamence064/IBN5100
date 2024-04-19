@@ -116,6 +116,9 @@ namespace IBN5100 {
             // From this result, we can then modify the min or max accordingly.
             int temp = negamax(pos, med, med + 1);
 
+            std::cout << "Med Yor: " << med << "\n";
+            std::cout << "Temp Yor: " << temp << "\n";
+
             // update the min and max accordingly
             if (temp <= med) { max = temp; }
             else { min = temp; }

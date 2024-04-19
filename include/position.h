@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <cassert>
-// #include <iostream>
+#include <iostream> // todo for debugging
 
 namespace IBN5100 {
     // Generate a bitmask representing the bottom slot of each column.
@@ -36,7 +36,7 @@ namespace IBN5100 {
      * Since bottom is constant, key = pos + mask would also be a unique representation.
      */
     class Position {
-        public: // todo change back to private
+        private:
             uint64_t pos = 0; // bitmap storing a 1 to represent every cell the current player has a piece in
             uint64_t mask = 0; // bitmask storing a 1 to represent every cell containing a piece
             int moves = 0; // moves played since the start of the game
@@ -55,7 +55,7 @@ namespace IBN5100 {
              * @param mask (uint64) A bitmask with all the occupied cells.
              * @return A bitmap with a 1 representing all the winning cells for the current player.
              */
-            constexpr static uint64_t computeWinPos(uint64_t pos, uint64_t mask) {
+            static constexpr uint64_t computeWinPos(uint64_t pos, uint64_t mask) {
                 // * ===========
                 // * Vertical
                 // * ===========
