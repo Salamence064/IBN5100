@@ -3,6 +3,8 @@
 #include "transpositiontable.h"
 #include "movesorter.h"
 
+// todo add an analyze function
+
 namespace IBN5100 {
     class Solver {
         private:

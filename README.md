@@ -3,7 +3,3 @@
 A 7x6 Connect 4 solver.
 The name is Steins;Gate inspired.
 This description will be fleshed out further once the project is further along, as will the rest of the README.
-
-___ 
-
-This solver was created using the techniques published by Pascal Pons as a basis. Parts of his code are used here to ensure sufficient optimization. To view the source, visit his [GitHub page](https://github.com/PascalPons/connect4).

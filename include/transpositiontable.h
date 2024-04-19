@@ -10,19 +10,21 @@ namespace IBN5100 {
     // * Util functions to compute the next prime at compile time
     // * ============================================================
 
-    constexpr uint64_t med(uint64_t min, uint64_t max) { return (max + min)/2; };
+    // todo if stuff fails in the future after debugging pos17, check this
+
+    static constexpr uint64_t med(uint64_t min, uint64_t max) { return (max + min)/2; };
 
     // Use a modified binary seach to determine if n has a factor between min (inclusive) and max (exclusive)
-    constexpr bool hasFactor(uint64_t n, uint64_t min, uint64_t max) {
+    static constexpr bool hasFactor(uint64_t n, uint64_t min, uint64_t max) {
         return min*min > n ? false : // there cannot be factors above sqrt(n)
             min + 1 >= max ? !(n%min) : // if we are at the end of the search, check if min is a factor
             hasFactor(n, min, med(min,max)) || hasFactor(n, med(min,max), max);
     };
 
     // Return the next prime number greater than or equal to n (n >= 2)
-    constexpr uint64_t nextPrime(uint64_t n) { return hasFactor(n, 2, n) ? nextPrime(n+1) : n; };
+    static constexpr uint64_t nextPrime(uint64_t n) { return hasFactor(n, 2, n) ? nextPrime(n+1) : n; };
 
-    constexpr unsigned int log2(unsigned int n) { return n <= 1 ? 0 : log2(n/2)+1; };
+    static constexpr unsigned int log2(unsigned int n) { return n <= 1 ? 0 : log2(n/2)+1; };
 
 
     /**

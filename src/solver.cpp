@@ -36,6 +36,9 @@ namespace IBN5100 {
             if (alpha >= beta) { return beta; }
         }
 
+        std::cout << "\nYor3: " << min << ", " << max << "\n";
+        std::cout << "Yor4: " << alpha << ", " << beta << "\n\n";
+
         // Check if we have a position stored in our transposition table.
         // If we do, we will update the bounds accordingly.
         uint64_t key = pos.key();
@@ -77,6 +80,7 @@ namespace IBN5100 {
 
             // The score of the move would be equal to the negative score of the move for the opponent. 
             int score = -negamax(pos2, -beta, -alpha);
+            std::cout << "Yor Score: " << score << "\n";
 
             // If the score is greater than or equal to the upper bound, we know we have found the best possible score.
             if (score >= beta) {
@@ -105,6 +109,8 @@ namespace IBN5100 {
             max = 1;
         }
 
+        std::cout << "Yor min-max: " << min << ", " << max << "\n\n";
+
         // iteratively narrow the search window with a modified version of binary search
         while (min < max) {
             int med = min + (max - min)/2;
@@ -116,8 +122,8 @@ namespace IBN5100 {
             // From this result, we can then modify the min or max accordingly.
             int temp = negamax(pos, med, med + 1);
 
-            std::cout << "Med Yor: " << med << "\n";
-            std::cout << "Temp Yor: " << temp << "\n";
+            std::cout << "\nMed Yor: " << med << "\n";
+            std::cout << "Temp Yor: " << temp << "\n\n";
 
             // update the min and max accordingly
             if (temp <= med) { max = temp; }
