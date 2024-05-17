@@ -2,7 +2,7 @@
 #include "../include/solver.h"
 
 namespace IBN5100 {
-    int Solver::negamax(Position const &pos, int alpha, int beta) {        
+    int Solver::negamax(Position const &pos, int alpha, int beta) {
         assert(alpha < beta);
         assert(!pos.canWinNext());
 
@@ -36,16 +36,13 @@ namespace IBN5100 {
             if (alpha >= beta) { return beta; }
         }
 
-        std::cout << "\nYor3: " << min << ", " << max << "\n";
-        std::cout << "Yor4: " << alpha << ", " << beta << "\n\n";
-
         // Check if we have a position stored in our transposition table.
         // If we do, we will update the bounds accordingly.
         uint64_t key = pos.key();
 
         if (int val = transTable[key]) {
             if (val > Position::maxScore - Position::minScore + 1) { // we have a lower bound
-                min = val + 2*Position::minScore - Position::maxScore - 2; // decode the stored lower bound
+                min = val - Position::maxScore + 2*Position::minScore - 2; // decode the stored lower bound
 
                 // Check if we need to update our lower bound.
                 if (alpha < min) {
@@ -80,7 +77,6 @@ namespace IBN5100 {
 
             // The score of the move would be equal to the negative score of the move for the opponent. 
             int score = -negamax(pos2, -beta, -alpha);
-            std::cout << "Yor Score: " << score << "\n";
 
             // If the score is greater than or equal to the upper bound, we know we have found the best possible score.
             if (score >= beta) {
@@ -99,6 +95,8 @@ namespace IBN5100 {
     };
 
     int Solver::solve(Position const &pos, bool weak) {
+        nodeCount = 0;
+
         if (pos.canWinNext()) { return (43 - pos.getMoves())/2; }
 
         int min = -(42 - pos.getMoves())/2;
@@ -108,8 +106,6 @@ namespace IBN5100 {
             min = -1;
             max = 1;
         }
-
-        std::cout << "Yor min-max: " << min << ", " << max << "\n\n";
 
         // iteratively narrow the search window with a modified version of binary search
         while (min < max) {
@@ -121,9 +117,6 @@ namespace IBN5100 {
             // Use a search window of depth 1 to see if the actual score is less than or greater than med.
             // From this result, we can then modify the min or max accordingly.
             int temp = negamax(pos, med, med + 1);
-
-            std::cout << "\nMed Yor: " << med << "\n";
-            std::cout << "Temp Yor: " << temp << "\n\n";
 
             // update the min and max accordingly
             if (temp <= med) { max = temp; }

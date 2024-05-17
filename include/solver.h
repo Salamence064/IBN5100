@@ -24,7 +24,7 @@ namespace IBN5100 {
             int negamax(Position const &pos, int alpha, int beta);
 
         public:
-            constexpr Solver() : nodeCount{0} {};
+            inline Solver() { reset(); };
 
             /**
              * @brief Solve a Connect 4 position either weakly or strongly.

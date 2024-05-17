@@ -105,6 +105,10 @@ namespace IBN5100 {
             static constexpr uint64_t topMaskCol(int c) { return 1ULL << (5 + c*7); };
             static constexpr uint64_t bottomMaskCol(int c) { return 1ULL << c*7; };
 
+            // This play method is used for the initialization of the board and is made private to avoid 
+            //  issues with overloads between int and uint64_t.
+            inline void play(int c) { play((mask + bottomMaskCol(c)) & columnMask(c)); };
+
         public:
             static constexpr int minScore = -18;
             static constexpr int maxScore = 18;
@@ -131,7 +135,6 @@ namespace IBN5100 {
             };
 
             inline bool canPlay(int c) const { return !(mask & topMaskCol(c)); };
-            inline void play(int c) { play((mask + bottomMaskCol(c)) & columnMask(c)); };
 
             inline void play(uint64_t move) {
                 pos ^= mask;
@@ -169,7 +172,7 @@ namespace IBN5100 {
                 uint64_t p = computeWinPos(pos | move, mask);
                 
                 int n = 0;
-                for (; n; ++n) { p &= p - 1; }
+                for (; p; ++n) { p &= p - 1; }
                 return n;
             };
             
