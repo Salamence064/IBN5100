@@ -3,7 +3,6 @@
 #include <string>
 #include <cstdint>
 #include <cassert>
-#include <iostream> // todo for debugging
 
 namespace IBN5100 {
     // Generate a bitmask representing the bottom slot of each column.
