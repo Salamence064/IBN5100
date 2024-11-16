@@ -55,12 +55,17 @@ namespace IBN5100 {
              * @return A bitmap with a 1 representing all the winning cells for the current player.
              */
             static constexpr uint64_t computeWinPos(uint64_t pos, uint64_t mask) {
+                uint64_t r = 0;
+
                 // * ===========
                 // * Vertical
                 // * ===========
 
-                uint64_t r = (pos << 1) & (pos << 2) & (pos << 3);
+            #ifndef NO_VERTICALS
 
+                r |= (pos << 1) & (pos << 2) & (pos << 3);
+            
+            #endif
 
                 // * =============
                 // * Horizontal

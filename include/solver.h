@@ -3,14 +3,17 @@
 #include "transpositiontable.h"
 #include "movesorter.h"
 
+// todo optimize existing components as currently it is a little slow
 // todo add an analyze function
+// todo add an opening book
+// todo remove the asserts for the final version
 
 namespace IBN5100 {
     class Solver {
         private:
             uint64_t nodeCount; // track the number of explored nodes
             int colOrder[7] = {3, 4, 2, 5, 1, 6, 0}; // current priority for the columns
-            TranspositionTable<49, log2(Position::maxScore - Position::minScore + 1) + 2, 23> transTable;
+            TransposeTable transTable;
         
             /**
              * @brief Recursively solve a Connect 4 position using a negamax alpha-beta pruning algorithm.

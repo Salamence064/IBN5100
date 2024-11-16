@@ -1,9 +1,9 @@
 #pragma once
 
-#include <cstdint>
 #include <cstring>
-#include <cassert>
 #include <type_traits>
+
+#include "position.h"
 
 namespace IBN5100 {
     // * ============================================================
@@ -28,11 +28,13 @@ namespace IBN5100 {
     /**
      * @brief A collection of positions previously explored by our solver. This is used to avoid re-exploring the same position.
      * It is stored as a HashMap with a fixed size. In case of collision, the last entry is kept and the previous one is overwritten.
-     * When storing the score, we differentiate if it's a lower bound or upper bound by adding or subtracting a constant to the score.
-     * We have 2*(maxScore - minScore + 1) possibilities, which for 7x6 is 74. 74 - 18 = 56, so we store lower bounds by adding 56.
-     * This makes lower bound scores in [38, 74]. Further, 37 - 18 = 19, so we store upper bounds by adding 19. This makes upper bounds
-     * scores in [1, 37]. Thus, we can differentiate between lower and upper bounds by checking if the score is above 37. Note, it is
-     * important to not try to use rule of 5 operators (other than the destructor) for this class as they are not implemented.
+     * When storing the score, we differentiate if it's a lower bound, upper bound, or an absolute bound by adding or subtracting a 
+     * constant to the score. We have 3*(maxScore - minScore + 1) possibilities, which for 7x6 is 111. 111 - 18 = 93, so we store
+     * absolute bounds by adding 93. This makes absolute bound scores in [75, 111]. 74 - 18 = 56, so we store lower bounds by adding 56.
+     * This makes lower bound scores in [38, 74]. Further, 37 - 18 = 19, so we store upper bounds by adding 19. This makes upper bounds 
+     * scores in [1, 37]. Thus, we can differentiate between lower and upper bounds by checking if the score is above 37, and from
+     * absolute bounds by checking if the score is above 74. Note, it is important to not try to use rule of 5 operators (other than 
+     * the destructor) for this class as they are not implemented.
      * 
      * @tparam keySize (uint) Number of bits of the key.
      * @tparam valueSize (uint) Number of bits of the value.
@@ -46,9 +48,9 @@ namespace IBN5100 {
             static_assert(logSize   <= 64, "logSize is too large");
 
             template<int S> using uint_t = 
-                typename std::conditional<S <= 8, uint_least8_t, 
+                typename std::conditional<S <= 8, uint_least8_t,
                 typename std::conditional<S <= 16, uint_least16_t,
-                typename std::conditional<S <= 32, uint_least32_t, 
+                typename std::conditional<S <= 32, uint_least32_t,
                                                     uint_least64_t>::type >::type >::type;
 
             typedef uint_t<keySize - logSize> key_t;
@@ -106,4 +108,11 @@ namespace IBN5100 {
                 return keys[pos] == (key_t) key ? values[pos] : 0; // cast to key_t as keys[pos] may have been truncated
             };
     };
+
+
+    // * ===========================================
+    // * Typedef for Default Transposition Table
+    // * ===========================================
+
+    typedef TranspositionTable<49, log2(Position::maxScore - Position::minScore + 1) + 2, 23> TransposeTable;
 }

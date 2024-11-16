@@ -41,7 +41,10 @@ namespace IBN5100 {
         uint64_t key = pos.key();
 
         if (int val = transTable[key]) {
-            if (val > Position::maxScore - Position::minScore + 1) { // we have a lower bound
+            if (val > 2*(Position::maxScore - Position::minScore + 1)) { // we have an absolute bound
+                return val - 2*Position::maxScore + 3*Position::minScore - 3; // decode and return the stored absolute bound
+
+            } else if (val > Position::maxScore - Position::minScore + 1) { // we have a lower bound
                 min = val - Position::maxScore + 2*Position::minScore - 2; // decode the stored lower bound
 
                 // Check if we need to update our lower bound.
