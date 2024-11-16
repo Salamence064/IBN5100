@@ -1,6 +1,6 @@
 #pragma once
 
-#include "transpositiontable.h"
+#include "openingbook.h"
 #include "movesorter.h"
 
 // todo optimize existing components as currently it is a little slow
@@ -27,7 +27,12 @@ namespace IBN5100 {
             int negamax(Position const &pos, int alpha, int beta);
 
         public:
-            inline Solver() { reset(); };
+            inline Solver(OpeningBook* openingBook = nullptr) {
+                reset();
+
+                // If we are provided an opening book, load the positions into the transposition table
+                if (openingBook != nullptr) { openingBook->load(&transTable); }
+            };
 
             /**
              * @brief Solve a Connect 4 position either weakly or strongly.

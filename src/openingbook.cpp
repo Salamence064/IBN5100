@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <iterator>
 
 #include "../include/openingbook.h"
@@ -17,13 +16,13 @@ namespace IBN5100 {
         f.close();
     };
 
-    void OpeningBook::save(Position const &pos, int score) {
+    void OpeningBook::save(uint64_t key, int score) {
         if (numPos == UINT16_MAX) { // ensure we do not add more positions than we can store
             std::cout << "Max number of positions stored.\n"; // todo for debugging
             return;
         }
 
-        serializePrimitive<uint64_t>(buffer, bufferSize, pos.key());
+        serializePrimitive<uint64_t>(buffer, bufferSize, key);
         serializePrimitive<int>(buffer, bufferSize, score);
 
         ++numPos;
@@ -39,23 +38,23 @@ namespace IBN5100 {
 
         // Load the data from the file into a buffer
         std::vector<char> buf(std::istreambuf_iterator<char>(f), {});
-        bufferSize = 0;
+        size_t currentIndex = 0;
         f.close();
 
         // read in the number of stored positions
-        numPos = deserializePrimitive<uint16_t>(buf, bufferSize);
+        uint16_t numPositions = deserializePrimitive<uint16_t>(buf, currentIndex);
 
         // add each position to our transposition table
-        for (uint16_t i = 0; i < numPos; ++i) {
-            uint64_t key = deserializePrimitive<uint64_t>(buf, bufferSize);
-            int score = deserializePrimitive<int>(buf, bufferSize);
+        for (uint16_t i = 0; i < numPositions; ++i) {
+            uint64_t key = deserializePrimitive<uint64_t>(buf, currentIndex);
+            int score = deserializePrimitive<int>(buf, currentIndex);
 
             // store the score as an absolute bound
             t->add(key, score + 2*Position::maxScore - 3*Position::minScore + 3);
-        }
 
-        // save the data to the this instance of the opening book
-        std::memcpy(buffer + 2, buf.data(), (bufferSize - 2) * sizeof(char));
+            // save the position to the opening book to prevent us from losing it
+            save(key, score);
+        }
 
         std::cout << "Opening book loaded into transposition table.\n"; // todo also just for debugging
     };
